@@ -1,69 +1,74 @@
-# Credit: this work is heavily based on https://github.com/apache/couchdb-docker/blob/master/2.0.0/Dockerfile
+## REWIND
+FROM couchdb:3.1.1
 
-# We use ubuntu instead of debian:jessie as we want Erlang >= 18 for CouchDB SSL support
-FROM ubuntu
 
-MAINTAINER Geoff Cox redgeoff@gmail.com
 
-# Update distro to get recent list of packages
-RUN apt-get update -y -qq
+##### Credit: this work is heavily based on https://github.com/apache/couchdb-docker/blob/master/2.0.0/Dockerfile
 
-# Download runtime dependencies
-RUN apt-get --no-install-recommends -y install \
-            erlang-nox \
-            erlang-reltool \
-            libicu55 \
-            libmozjs185-1.0 \
-            openssl \
-            curl
-
-# Update package lists
-RUN apt-get update -y -qq
-
-# The certs need to be installed after we have updated the package lists
-RUN apt-get --no-install-recommends -y install \
-            ca-certificates
-
-# TODO: Installing nodejs adds almost 300 MB to our image! Even the official node image
-# (https://hub.docker.com/_/node/) is 666 MB. Is the best solution to eventually rewrite
-# docker-discover-tasks in lower level language like c++?
-#
-# Install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-  && apt-get install -y nodejs \
-  && npm install npm -g
-
-# Assuming the build process stays the same, you should be able to just change value of
-# COUCHDB_VERSION to upgrade to the latest source
-ENV COUCHDB_VERSION 2.1.1
-
-# Download CouchDB, build it and then clean up
-RUN buildDeps=" \
-    g++ \
-    erlang-dev \
-    libcurl4-openssl-dev \
-    libicu-dev \
-    libmozjs185-dev \
-    make \
-    wget \
-  " \
-  && apt-get --no-install-recommends -y install $buildDeps \
-  && cd /usr/src \
-  && wget http://www-us.apache.org/dist/couchdb/source/$COUCHDB_VERSION/apache-couchdb-$COUCHDB_VERSION.tar.gz \
-  && tar xfz apache-couchdb-$COUCHDB_VERSION.tar.gz \
-  && rm apache-couchdb-$COUCHDB_VERSION.tar.gz \
-  && cd apache-couchdb-$COUCHDB_VERSION \
-  && ./configure \
-  && make release \
-  && adduser --system \
-             --shell /bin/bash \
-             --group --gecos \
-             "CouchDB Administrator" couchdb \
-  && mv ./rel/couchdb /home/couchdb \
-  && cd ../ \
-  && rm -rf apache-couchdb-$COUCHDB_VERSION \
-  && apt-get purge -y --auto-remove $buildDeps \
-  && rm -rf /var/lib/apt/lists/*
+##### We use ubuntu instead of debian:jessie as we want Erlang >= 18 for CouchDB SSL support
+####FROM ubuntu
+####
+####MAINTAINER Geoff Cox redgeoff@gmail.com
+####
+##### Update distro to get recent list of packages
+####RUN apt-get update -y -qq
+####
+##### Download runtime dependencies
+####RUN apt-get --no-install-recommends -y install \
+####            erlang-nox \
+####            erlang-reltool \
+####            libicu55 \
+####            libmozjs185-1.0 \
+####            openssl \
+####            curl
+####
+##### Update package lists
+####RUN apt-get update -y -qq
+####
+##### The certs need to be installed after we have updated the package lists
+####RUN apt-get --no-install-recommends -y install \
+####            ca-certificates
+####
+##### TODO: Installing nodejs adds almost 300 MB to our image! Even the official node image
+##### (https://hub.docker.com/_/node/) is 666 MB. Is the best solution to eventually rewrite
+##### docker-discover-tasks in lower level language like c++?
+#####
+##### Install nodejs
+####RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+####  && apt-get install -y nodejs \
+####  && npm install npm -g
+####
+##### Assuming the build process stays the same, you should be able to just change value of
+##### COUCHDB_VERSION to upgrade to the latest source
+####ENV COUCHDB_VERSION 2.1.1
+####
+##### Download CouchDB, build it and then clean up
+####RUN buildDeps=" \
+####    g++ \
+####    erlang-dev \
+####    libcurl4-openssl-dev \
+####    libicu-dev \
+####    libmozjs185-dev \
+####    make \
+####    wget \
+####  " \
+####  && apt-get --no-install-recommends -y install $buildDeps \
+####  && cd /usr/src \
+####  && wget http://www-us.apache.org/dist/couchdb/source/$COUCHDB_VERSION/apache-couchdb-$COUCHDB_VERSION.tar.gz \
+####  && tar xfz apache-couchdb-$COUCHDB_VERSION.tar.gz \
+####  && rm apache-couchdb-$COUCHDB_VERSION.tar.gz \
+####  && cd apache-couchdb-$COUCHDB_VERSION \
+####  && ./configure \
+####  && make release \
+####  && adduser --system \
+####             --shell /bin/bash \
+####             --group --gecos \
+####             "CouchDB Administrator" couchdb \
+####  && mv ./rel/couchdb /home/couchdb \
+####  && cd ../ \
+####  && rm -rf apache-couchdb-$COUCHDB_VERSION \
+####  && apt-get purge -y --auto-remove $buildDeps \
+####  && rm -rf /var/lib/apt/lists/*
 
 # Add config files
 COPY local.ini /home/couchdb/couchdb/etc/local.d/
