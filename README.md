@@ -47,7 +47,7 @@ You'll then want to use the outputted value as the value of `COUCHDB_HASHED_PASS
       -e COUCHDB_DATA_DIR="/common/data/{{.Service.Name}}{{.Task.Slot}}" \
       -p 5984:5984 \
       --detach=true \
-      redgeoff/couchdb-service
+      couchsofa/couchsofa
 
 `COUCHDB_COOKIE` and `COUCHDB_SECRET` should be some random string of characters--you may want to use a password generator to generate these values.
 
@@ -72,7 +72,7 @@ We assume /home/ubuntu/common/ssl/mydomain.crt and /home/ubuntu/common/ssl/mydom
       -e COUCHDB_CACERT_FILE="/common/ssl/mydomain.crt" \
       -p 6984:6984 \
       --detach=true \
-      redgeoff/couchdb-service
+      couchsofa/couchsofa
 
 ### Example with SSL and custom local.ini:
 
@@ -107,7 +107,7 @@ Then run:
       -e COUCHDB_CACERT_FILE="/common/ssl/mydomain.co.crt" \
       -p 6984:6984 \
       --detach=true \
-      redgeoff/couchdb-service
+      couchsofa/couchsofa
 
 
 ## To scale up
@@ -122,5 +122,5 @@ TODO: To scale down, you should spin up a new cluster and replicate all the data
 
 ## Upgrade to latest image
 
-    $ docker pull redgeoff/couchdb-service
-    $ docker service update --detach=true --image redgeoff/couchdb-service couchdb
+    $ docker pull couchsofa/couchsofa
+    $ docker service update --detach=true --image couchsofa/couchsofa couchdb
