@@ -3,6 +3,40 @@
 FROM couchdb:latest
 
 
+# Add config files
+COPY local.ini /home/couchdb/couchdb/etc/local.d/
+COPY vm.args /home/couchdb/couchdb/etc/
+
+# Set up directories and permissions
+RUN mkdir -p /home/couchdb/couchdb/data /home/couchdb/couchdb/etc/default.d \
+  && find /home/couchdb/couchdb -type d -exec chmod 0770 {} \; \
+  && chmod 0644 /home/couchdb/couchdb/etc/* \
+  && chmod 775 /home/couchdb/couchdb/etc/*.d \
+  && chown -R couchdb:couchdb /home/couchdb/couchdb/
+
+# docker-discover-tasks allows the nodes to discover each other
+RUN apt-get -y -qq update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y -qq dist-upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y -qq install npm nodejs && \
+    npm i npm@latest -g && npm install -g docker-discover-tasks && apt-get -y remove npm && apt-get -y autoremove  
+
+WORKDIR /home/couchdb/couchdb
+
+EXPOSE 5984 6984 4369 9100-9200
+
+COPY couchdb-process.sh /couchdb-process.sh
+COPY discover-process.sh /discover-process.sh
+COPY set-up-process.sh /set-up-process.sh
+COPY wait-for-host.sh /wait-for-host.sh
+COPY wait-for-it.sh /wait-for-it.sh
+COPY wrapper.sh /wrapper.sh
+
+CMD ["/wrapper.sh"]
+
+
+
+
+######## ORIGINAL DOCKERFILE from redgeoff
 
 ##### Credit: this work is heavily based on https://github.com/apache/couchdb-docker/blob/master/2.0.0/Dockerfile
 
@@ -70,33 +104,3 @@ FROM couchdb:latest
 ####  && rm -rf apache-couchdb-$COUCHDB_VERSION \
 ####  && apt-get purge -y --auto-remove $buildDeps \
 ####  && rm -rf /var/lib/apt/lists/*
-
-# Add config files
-COPY local.ini /home/couchdb/couchdb/etc/local.d/
-COPY vm.args /home/couchdb/couchdb/etc/
-
-# Set up directories and permissions
-RUN mkdir -p /home/couchdb/couchdb/data /home/couchdb/couchdb/etc/default.d \
-  && find /home/couchdb/couchdb -type d -exec chmod 0770 {} \; \
-  && chmod 0644 /home/couchdb/couchdb/etc/* \
-  && chmod 775 /home/couchdb/couchdb/etc/*.d \
-  && chown -R couchdb:couchdb /home/couchdb/couchdb/
-
-# docker-discover-tasks allows the nodes to discover each other
-RUN apt-get -y -qq update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y -qq dist-upgrade && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y -qq install npm nodejs && \
-    npm i npm@latest -g && npm install -g docker-discover-tasks && apt-get -y remove npm && apt-get -y autoremove  
-
-WORKDIR /home/couchdb/couchdb
-
-EXPOSE 5984 6984 4369 9100-9200
-
-COPY couchdb-process.sh /couchdb-process.sh
-COPY discover-process.sh /discover-process.sh
-COPY set-up-process.sh /set-up-process.sh
-COPY wait-for-host.sh /wait-for-host.sh
-COPY wait-for-it.sh /wait-for-it.sh
-COPY wrapper.sh /wrapper.sh
-
-CMD ["/wrapper.sh"]
