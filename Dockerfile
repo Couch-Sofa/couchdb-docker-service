@@ -1,5 +1,6 @@
 ## REWIND
-FROM couchdb:3.1.1
+#FROM couchdb:3.1.1
+FROM couchdb:latest
 
 
 
