@@ -9,11 +9,12 @@ if [ "$COUCHDB_DATA_DIR" ]; then
 
   # Make sure directory exists
   mkdir -p $COUCHDB_DATA_DIR
-
   ln -s $COUCHDB_DATA_DIR /home/couchdb/couchdb/data
 fi
 
-ln -s /opt/couchdb/* /home/couchdb/couchdb/
+
+echo "couch:dirs:softlink"
+ln -s /opt/couchdb/* /home/couchdb/couchdb/ 2>/dev/null
 
 echo "couch:setup:cookie"
 # Use sname so that we can specify a short name, like those used by docker, instead of a host
@@ -65,7 +66,7 @@ if [ "$COUCHDB_LOCAL_INI" ]; then
 fi
 chown -R couchdb:couchdb  /home/couchdb/couchdb/etc/ &
 chown -R couchdb:couchdb /home/couchdb/couchdb/data
-wait 
+wait
 echo "couch:setup:spawn"
 
 #/home/couchdb/couchdb/bin/couchdb
