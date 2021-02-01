@@ -18,7 +18,7 @@ RUN mkdir -p /home/couchdb/couchdb/data /home/couchdb/couchdb/etc/default.d \
 RUN apt-get -y -qq update && \
   DEBIAN_FRONTEND=noninteractive apt-get -y -qq dist-upgrade && \
   DEBIAN_FRONTEND=noninteractive apt-get -y -qq install npm nodejs && \
-  npm i npm@latest -g && npm install -g docker-discover-tasks && apt-get -y remove npm && apt-get -y autoremove
+  npm i npm@latest -g && npm install -g docker-discover-tasks && apt-get -y remove npm && apt-get -y autoremove && rm -rf /var/cache/apt/* /var/lib/dpkg/lists/*
 
 WORKDIR /home/couchdb/couchdb
 

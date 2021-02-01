@@ -14,7 +14,7 @@ fi
 
 
 echo "couch:dirs:softlink"
-ln -s /opt/couchdb/* /home/couchdb/couchdb/ 2>/dev/null
+ln -s $(ls /opt/couchdb/* -1d|grep -v couchdb/data) /home/couchdb/couchdb/ 2>/dev/null || true
 
 echo "couch:setup:cookie"
 # Use sname so that we can specify a short name, like those used by docker, instead of a host
@@ -56,9 +56,10 @@ if [ "$COUCHDB_CERT_FILE" ] && [ "$COUCHDB_KEY_FILE" ] && [ "$COUCHDB_CACERT_FIL
 fi
 echo "couch:setup:chown"
 # Set the permissions.   ###  This is not needed when running couchdb as root
- if [ -f /home/couchdb/couchdb/etc/local.d/docker.ini ];
+ if [ -f /home/couchdb/couchdb/etc/local.d/docker.ini ];then
    chown couchdb:couchdb /home/couchdb/couchdb/etc/local.d/docker.ini
  fi
+ echo "couch:setup:chown:local.d"
 
 if [ "$COUCHDB_LOCAL_INI" ]; then
   # If a custom local.ini file is specified, e.g. through a volume, then copy it to CouchDB

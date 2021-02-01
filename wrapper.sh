@@ -3,21 +3,25 @@
 # Adaptation of https://docs.docker.com/engine/admin/multi-service_container/
 
 # Start the discover process
-echo "discovering..."
+echo echo -n "discovering..."
 /discover-process.sh &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start discover-process: $status"
   exit $status
+else
+  echo "started"
 fi
 
-echo "couchdb process.."
+echo -n "couchdb process.."
 # Start the couchdb process
 /couchdb-process.sh &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start couchdb-process: $status"
   exit $status
+else
+  echo "started"
 fi
 
 echo "setup process.."
