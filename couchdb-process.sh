@@ -26,10 +26,12 @@ if [ ! -z "$NODENAME" ] && ! grep "couchdb@" /home/couchdb/couchdb/etc/vm.args; 
     echo "-sname couchdb@$NODENAME -setcookie '$COUCHDB_COOKIE'" >> /home/couchdb/couchdb/etc/vm.args
   fi
 fi
-echo "couch:setup:user"
+echo -n "couch:setup:user"
 if [ "$COUCHDB_USER" ] && [ "$COUCHDB_PASSWORD" ] && [ -z "$COUCHDB_HASHED_PASSWORD" ]; then
-  # Create admin
+  echo "Creating admin"
   printf "[admins]\n%s = %s\n" "$COUCHDB_USER" "$COUCHDB_PASSWORD" >> /home/couchdb/couchdb/etc/local.d/docker.ini
+else
+  echo "please define COUCHDB_USER COUCHDB_PASSWORD AND COUCHDB_HASHED_PASSWORD"
 fi
 
 if [ "$COUCHDB_USER" ] && [ "$COUCHDB_HASHED_PASSWORD" ]; then
@@ -56,9 +58,9 @@ if [ "$COUCHDB_CERT_FILE" ] && [ "$COUCHDB_KEY_FILE" ] && [ "$COUCHDB_CACERT_FIL
 fi
 echo "couch:setup:chown"
 # Set the permissions.   ###  This is not needed when running couchdb as root
- if [ -f /home/couchdb/couchdb/etc/local.d/docker.ini ];then
+if [ -f /home/couchdb/couchdb/etc/local.d/docker.ini ];then
    chown couchdb:couchdb /home/couchdb/couchdb/etc/local.d/docker.ini
- fi
+fi
  echo "couch:setup:chown:local.d"
 
 if [ "$COUCHDB_LOCAL_INI" ]; then
