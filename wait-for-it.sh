@@ -17,6 +17,7 @@ Usage:
     -q | --quiet                Don't output any status messages
     -t TIMEOUT | --timeout=TIMEOUT
                                 Timeout in seconds, zero for no timeout
+    --stage=STAGE               dummy argument for debugging ( so you find which process blocks with "ps aux|grep wait")
     -- COMMAND ARGS             Execute command with args after the test finishes
 USAGE
     exit 1
@@ -97,6 +98,10 @@ do
         PORT="$2"
         if [[ $PORT == "" ]]; then break; fi
         shift 2
+        ;;
+        --stage=*)
+        STAGE="${1#*=}"
+        shift 1
         ;;
         --port=*)
         PORT="${1#*=}"

@@ -3,6 +3,7 @@
 # Adaptation of https://docs.docker.com/engine/admin/multi-service_container/
 
 # Start the discover process
+echo "discovering..."
 /discover-process.sh &
 status=$?
 if [ $status -ne 0 ]; then
@@ -10,6 +11,7 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
+echo "couchdb process.."
 # Start the couchdb process
 /couchdb-process.sh &
 status=$?
@@ -18,6 +20,7 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
+echo "setup process.."
 # Start the set-up process in the foreground after the DBs are ready. We expect this process to
 # complete and then the script will continue on and monitor the other 2 processes.
 /set-up-process.sh
