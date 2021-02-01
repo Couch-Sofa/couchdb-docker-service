@@ -70,6 +70,8 @@ fi
 chown -R couchdb:couchdb  /home/couchdb/couchdb/etc/ &
 chown -R couchdb:couchdb /home/couchdb/couchdb/data
 wait
+echo "couch:setup:copy etc"
+cp -rv /home/couchdb/couchdb/etc/* /opt/couchdb/etc/
 echo "couch:setup:spawn"
 
 #/home/couchdb/couchdb/bin/couchdb
