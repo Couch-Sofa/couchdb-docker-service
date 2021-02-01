@@ -19,14 +19,14 @@ if [ $TASK_SLOT -eq 1 ]; then
   echo "Setting up primary node..."
 
   # Create system databases if they don't already exist
-  missing=`curl -X GET http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_users | grep 'not_found'`
+  missing=`curl -s -x GET http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_users | grep 'not_found'`
 
   if [ "$missing" ]; then
     # Sleep so that when we create the databases, they will be distributed over all our nodes
     sleep 60
-    curl -X PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_users
-    curl -X PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_replicator
-    curl -X PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_global_changes
+    curl -s -x PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_users
+    curl -s -x PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_replicator
+    curl -s -x PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb1:5984/_global_changes
   fi
 else
   echo "Setting up secondary node..."
@@ -39,6 +39,10 @@ else
   # clear route to couchdb1. Otherwise, if we try establishing the membership in the other
   # direction, a race condition in the /etc/hosts entries could lead to couchdb1 not being able to
   # connect to this node.
-  #curl -X PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5986/_nodes/couchdb@couchdb1 -d {}
-  curl -X PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_nodes/couchdb@couchdb1 -d {}
+  #curl -s -x PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5986/_nodes/couchdb@couchdb1 -d {}
+ # curl -s -x PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_nodes/couchdb@couchdb1 -d {}
+
+curl -s -X GET "http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_membership"
+curl -s -X PUT "http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_node/_local/_nodes/nod21@yyy.yyy.yyy.yyy" -d {}
+curl -s -X GET "http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_membership"
 fi
