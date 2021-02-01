@@ -43,6 +43,6 @@ else
  # curl -s -x PUT http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_nodes/couchdb@couchdb1 -d {}
 
 curl -s -X GET "http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_membership"
-curl -s -X PUT "http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_node/_local/_nodes/node2@yyy.yyy.yyy.yyy" -d {}
+curl -s -X PUT "http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_node/_local/_nodes/couchdb@couchdb1" -d {}
 curl -s -X GET "http://$COUCHDB_USER:$COUCHDB_PASSWORD@couchdb$TASK_SLOT:5984/_membership"
 fi
