@@ -62,5 +62,8 @@ if [ "$COUCHDB_LOCAL_INI" ]; then
   cp $COUCHDB_LOCAL_INI /home/couchdb/couchdb/etc/local.d/local.ini
 fi
 
-/home/couchdb/couchdb/bin/couchdb
-# /home/couchdb/couchdb/bin/couchdb 1>/dev/stdout 2>/dev/stderr
+chown -R couchdb:couchdb /home/couchdb/couchdb/data
+echo spawning
+
+#/home/couchdb/couchdb/bin/couchdb
+su -s /bin/bash -c "/home/couchdb/couchdb/bin/couchdb" couchdb 1>/dev/stdout 2>/dev/stderr

@@ -16,9 +16,9 @@ RUN mkdir -p /home/couchdb/couchdb/data /home/couchdb/couchdb/etc/default.d \
 
 # docker-discover-tasks allows the nodes to discover each other
 RUN apt-get -y -qq update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y -qq dist-upgrade && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y -qq install npm nodejs && \
-    npm i npm@latest -g && npm install -g docker-discover-tasks && apt-get -y remove npm && apt-get -y autoremove  
+  DEBIAN_FRONTEND=noninteractive apt-get -y -qq dist-upgrade && \
+  DEBIAN_FRONTEND=noninteractive apt-get -y -qq install npm nodejs && \
+  npm i npm@latest -g && npm install -g docker-discover-tasks && apt-get -y remove npm && apt-get -y autoremove
 
 WORKDIR /home/couchdb/couchdb
 
